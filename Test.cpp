@@ -221,26 +221,26 @@ TEST_CASE("Test the function find") {
             CHECK(myTree.find("me")==string("tom"));
 
             CHECK(myTree.find("mother")==string("tehila"));
-            CHECK(myTree.find("grandmother")==string("shara") || myTree.find("grandmother")==string("rachel" ));
-            CHECK(myTree.find("great-grandmother")==string("latipa") || (myTree.find("great-grandmother")==string("galit")
-                 (myTree.find("great-grandmother")==string("or") || (myTree.find("great-grandmother")==string("hana") );
-            CHECK(myTree.find("great-great-grandmother")==string("yafa") || myTree.find("great-great-grandmother")==string("noa")
-                 myTree.find("great-great-grandmother")==string("car") || myTree.find("great-great-grandmother")==string("rose")
-                 myTree.find("great-great-grandmother")==string("yeal") || myTree.find("great-great-grandmother")==string("tamar")
-                 myTree.find("great-great-grandmother")==string("lee") || myTree.find("great-great-grandmother")==string("tali"));
-            CHECK(myTree.find("great-great-great-grandmother")==string("sandra") || myTree.find("great-great-great-grandmother")==string("bar")
-                  myTree.find("great-great-great-grandmother")==string("sarit") || myTree.find("great-great-great-grandmother")==string("amit"));
+            CHECK( (myTree.find("grandmother")==string("shara") || myTree.find("grandmother")==string("rachel")) );
+            CHECK( (myTree.find("great-grandmother")==string("latipa")  || myTree.find("great-grandmother")==string("galit") ||
+                    myTree.find("great-grandmother")==string("or") || myTree.find("great-grandmother")==string("hana") ));
+            CHECK(( myTree.find("great-great-grandmother")==string("yafa") || myTree.find("great-great-grandmother")==string("noa") ||
+                   myTree.find("great-great-grandmother")==string("car") || myTree.find("great-great-grandmother")==string("rose") ||
+                   myTree.find("great-great-grandmother")==string("yeal") || myTree.find("great-great-grandmother")==string("tamar") ||
+                   myTree.find("great-great-grandmother")==string("lee") || myTree.find("great-great-grandmother")==string("tali") ));
+            CHECK(( myTree.find("great-great-great-grandmother")==string("sandra") || myTree.find("great-great-great-grandmother")==string("bar") ||
+                   myTree.find("great-great-great-grandmother")==string("sarit") || myTree.find("great-great-great-grandmother")==string("amit") ));
 
             CHECK(myTree.find("father")==string("haviv"));
-            CHECK(myTree.find("grandfather")==string("yitzhac") || myTree.find("grandfather")==string("moshe" ));
-            CHECK(myTree.find("great-grandfather")==string("zachi") || (myTree.find("great-grandfather")==string("oded")
-                 (myTree.find("great-grandfather")==string("odi") || (myTree.find("great-grandfather")==string("david") );
-            CHECK(myTree.find("great-great-grandfather")==string("itay") || myTree.find("great-great-grandfather")==string("elior")
-                  myTree.find("great-great-grandfather")==string("eli") || myTree.find("great-great-grandfather")==string("eliyahu")
-                  myTree.find("great-great-grandfather")==string("joni") || myTree.find("great-great-grandfather")==string("zvi")
-                  myTree.find("great-great-grandfather")==string("amos") || myTree.find("great-great-grandfather")==string("lior"));
-            CHECK(myTree.find("great-great-great-grandfather")==string("yakov") || myTree.find("great-great-great-grandfather")==string("tal")
-                  myTree.find("great-great-great-grandfather")==string("static") || myTree.find("great-great-great-grandfather")==string("ram"));
+            CHECK(( myTree.find("grandfather")==string("yitzhac") || myTree.find("grandfather")==string("moshe" ) ));
+            CHECK(( myTree.find("great-grandfather")==string("zachi") || myTree.find("great-grandfather")==string("oded") ||
+                   myTree.find("great-grandfather")==string("odi") || myTree.find("great-grandfather")==string("david") ));
+            CHECK(( myTree.find("great-great-grandfather")==string("itay") || myTree.find("great-great-grandfather")==string("elior") ||
+                   myTree.find("great-great-grandfather")==string("eli") || myTree.find("great-great-grandfather")==string("eliyahu") ||
+                   myTree.find("great-great-grandfather")==string("joni") || myTree.find("great-great-grandfather")==string("zvi") ||
+                   myTree.find("great-great-grandfather")==string("amos") || myTree.find("great-great-grandfather")==string("lior") ));
+            CHECK(( myTree.find("great-great-great-grandfather")==string("yakov") || myTree.find("great-great-great-grandfather")==string("tal") ||
+                   myTree.find("great-great-great-grandfather")==string("static")|| myTree.find("great-great-great-grandfather")==string("ram") ));
 
             //Should throw an error
              CHECK_THROWS(myTree.find("nephew"));
