@@ -3,40 +3,30 @@
 #include <string>
 using namespace std;
 
-class node{
-private:
-    node* father;
-    node* mother;
-    string privateName;
-    string lastName;
-public:
-    node (string privateName)
-    {
-        this->privateName=privateName;
-        this->lastName="";
-        this->father=NULL;
-        this->mother=NULL;
-    }
-    node (string lastName, string privateName)
-    {
-        this->privateName=privateName;
-        this->lastName=lastName;
-        this->father=NULL;
-        this->mother=NULL;
-    }
-
-    void setFather(node * father);
-    void setMother(node * mother);
-    void setPrivateName(string newPrivateName);
-    void setLastName(string newLastName);
-
-    node * getFather();
-    node * getMother();
-    string getPrivateName();
-    string getLastName();
-};
-
 namespace family {
+    class node
+    {
+    private:
+        node* father;
+        node* mother;
+        string name;
+        char gender;
+        int height;
+    public:
+        node ();
+        node (string name);
+        node (string name, char gender);
+        node(string name, char gender,int height);
+
+        void setFather(node * father);
+        void setMother(node * mother);
+
+        node * getFather();
+        node * getMother();
+        string getName();
+        char getGender();
+        int getHeight();
+    }; //end class node
 
     class Tree {
     private:
@@ -58,6 +48,17 @@ namespace family {
 
         void remove(string name);
 
-    };
-}
+        node * getRoot();
+
+    private:
+        node * returnNode(string key,node * ptr,int & height);
+
+    }; //end class Tree
+} //end namespace family
+
+
+
+
+
+
 
