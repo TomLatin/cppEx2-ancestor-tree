@@ -87,11 +87,11 @@ char node::getGender()
  */
 Tree& Tree:: addFather(string nameChild, string nameFather)
 {
-    int height=0;
+    int height=-1;
     node * toAdd=returnNode(nameChild,this->root,height);
     if(toAdd== nullptr)
     {
-        throw runtime_error("The "+nameChild +"does not exist in tree");
+        throw runtime_error("The "+nameChild +" does not exist in tree");
     }
     else //the name child is in the tree
     {
@@ -116,7 +116,7 @@ Tree& Tree:: addFather(string nameChild, string nameFather)
  */
 Tree& Tree:: addMother(string nameChild, string nameMother)
 {
-    int height=0;
+    int height=-1;
     node * toAdd=returnNode(nameChild,this->root,height);
     if(toAdd== nullptr)
     {
@@ -147,8 +147,8 @@ string Tree::relation(string name)
     if(this->root!=NULL && this->root->getName().compare(name)==0) return "me";
     else if (this->root->getMother()!= nullptr && this->root->getMother()->getName().compare(name)==0) return "mother";
     else if (this->root->getFather()!= nullptr && this->root->getFather()->getName().compare(name)==0) return "father";
-    else if (this->root->getMother()->getMother()!=nullptr && this->root->getMother()->getMother()->getName().compare(name)==0) return "mother";
-    else if (this->root->getFather()->getFather()!= nullptr && this->root->getFather()->getFather()->getName().compare(name)==0) return "father";
+    else if (this->root->getMother()->getMother()!=nullptr && this->root->getMother()->getMother()->getName().compare(name)==0) return "grandmother";
+    else if (this->root->getFather()->getFather()!= nullptr && this->root->getFather()->getFather()->getName().compare(name)==0) return "grandfather";
     else
     {
         int height=0;
