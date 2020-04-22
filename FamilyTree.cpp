@@ -32,7 +32,7 @@ node::node (string name, char gender)
     this->height=0;
 }
 
-node::node (string name, char gender,int height)
+node::node (string name, char gender='n',int height=0)
 {
     this->name=name;
     this->father=nullptr;
@@ -179,7 +179,54 @@ string Tree::relation(string name)
 
 string Tree:: find(string name)
 {
-    return "true";
+    if(name=="me"&&this->root!=NULL) return root->getName();
+    else if(name=="mother"&&this->root->getMother()!= nullptr) return this->root->getMother()->getName();
+    else if(name=="father"&&this->root->getFather()!= nullptr) return this->root->getFather()->getName();
+    string ans="";
+    string & finalAns=ans;
+    findRecursion(this->root,name,finalAns);
+    if(finalAns=="")
+    {
+        throw runtime_error("not in the tree");
+    }
+    else
+    {
+        return finalAns;
+    }
+}
+
+void  Tree:: findRecursion(node * ptr,string name,string & finalAns)
+{
+    if(ptr==NULL) return;
+    if(ptr->getMother()!=nullptr && ptr->getMother()->getMother()!=nullptr && name=="grandmother")
+    {
+        finalAns=ptr->getMother()->getMother()->getName();
+    }
+    else if(ptr->getFather()!=nullptr && ptr->getFather()->getMother()!=nullptr && name=="grandmother")
+    {
+        finalAns=ptr->getFather()->getMother()->getName();
+    }
+    else if(ptr->getMother()!=nullptr && ptr->getMother()->getFather()!=nullptr && name=="grandfather")
+    {
+        finalAns=ptr->getMother()->getFather()->getName();
+    }
+    else if(ptr->getFather()!=nullptr && ptr->getFather()->getFather()!=nullptr && name=="grandfather")
+    {
+        finalAns=ptr->getFather()->getFather()->getName();
+    }
+
+    if(name!="grandmother" && name!="grandfather" && (name.length()<6 || name.substr(0,6)!="great-"))
+    {
+        throw runtime_error("relation Illegal");
+    }
+    if(name!="grandmother" && name!="grandfather")
+    {
+        findRecursion(ptr->getFather(),name.substr(6), finalAns);
+    }
+    if(name!="grandmother" && name!="grandfather" && finalAns=="")
+    {
+        findRecursion(ptr->getMother(),name.substr(6),finalAns);
+    }
 }
 
 void Tree:: display()
@@ -189,14 +236,65 @@ void Tree:: display()
 
 void Tree:: remove(string name)
 {
+    if(this->root->getName()==name)
+    {
+        throw runtime_error("The root of the tree cannot be deleted");
+    }
+    else
+    {
+        node * child= nullptr;
+        findChild(this->root,name,&child);
+        if(child== nullptr)
+        {
+            throw runtime_error("Does not exist in tree");
+        }
+        else //find the child that we need to delete is parents
+        {
+            if(child->getMother()!=nullptr && child->getMother()->getName()==name)
+            {
+                deleteSubTree(child->getMother());
+                child->setMotherNull();
+            }
+            else if(child->getFather()!=nullptr && child->getFather()->getName()==name)
+            {
+                deleteSubTree(child->getFather());
+                child->setFatherNull();
+            }
+        }
+    }
+}
 
+void Tree::findChild(node * ptr,string name,node ** childToUpdate)
+{
+    if(ptr==NULL) return;
+    if( (ptr->getMother()!= nullptr && ptr->getMother()->getName()==name) || (ptr->getFather()!= nullptr && ptr->getFather()->getName()==name) )
+    {
+        *(childToUpdate)=ptr;
+    }
+    if(ptr->getFather()!= nullptr)
+    {
+        findChild(ptr->getFather(),name,childToUpdate);
+    }
+    if(ptr->getMother()!= nullptr)
+    {
+        findChild(ptr->getMother(),name,childToUpdate);
+    }
+}
+
+void Tree::deleteSubTree(node * ptr)
+{
+    if(ptr!=NULL)
+    {
+        deleteSubTree(ptr->getMother());
+        deleteSubTree(ptr->getFather());
+        delete ptr;
+    }
 }
 
 node* Tree::returnNode(string key,node* ptr,int & height)
 {
      if(ptr!= nullptr) //the node we currently working on is not null
      {
-//         cout<<"ptr->getName().compare(key) "<<ptr->getName().compare(key)<<"name"<<ptr->getName()<<"\n";
          if (ptr->getName().compare(key)==0) //find the right node
          {
              return ptr;
@@ -227,4 +325,4 @@ node* Tree::returnNode(string key,node* ptr,int & height)
     return nullptr;
 }
 
-//************Implementation of the private functions ************
+

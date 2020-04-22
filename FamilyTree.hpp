@@ -18,6 +18,21 @@ namespace family {
         node (string name, char gender);
         node(string name, char gender,int height);
 
+        ~node()
+        {
+            void setFatherNull();
+            void setMotherNull();
+        }
+
+        void setFatherNull()
+        {
+            this->father=nullptr;
+        }
+        void setMotherNull()
+        {
+            this->mother=nullptr;
+        }
+
         void setFather(node * father);
         void setMother(node * mother);
 
@@ -36,6 +51,10 @@ namespace family {
         {
             this->root=new node(name);
         }
+        ~Tree()
+        {
+            delete root;
+        }
         Tree& addFather(string nameChild, string nameFather);
 
         Tree& addMother(string nameChild, string nameMother);
@@ -52,6 +71,9 @@ namespace family {
 
     private:
         node * returnNode(string key,node * ptr,int & height);
+        void  findRecursion(node * ptr,string name,string & finalAns);
+        void findChild(node * ptr,string name,node ** childToUpdate);
+        void deleteSubTree(node * ptr);
 
     }; //end class Tree
 } //end namespace family

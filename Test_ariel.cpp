@@ -36,7 +36,7 @@ TEST_CASE("Yosef Tree case") {
 	T.addMother("Avi", "Sara");
 	CHECK_THROWS(T.addFather("Avraham", "Avraham"));    // duplicate father
 	CHECK_THROWS(T.addMother("Avraham", "Sara"));       // duplicate mother
-	 
+
 	// Relation test case
 	CHECK(T.relation("Yaakov") == string("father"));
 	CHECK(T.relation("Rachel") == string("mother"));
