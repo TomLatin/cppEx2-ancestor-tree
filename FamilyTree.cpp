@@ -1,5 +1,6 @@
 #include "FamilyTree.hpp"
 using namespace family;
+#define COUNT 10
 
 //************Implementation of the functions of node************
 
@@ -87,8 +88,12 @@ char node::getGender()
  */
 Tree& Tree:: addFather(string nameChild, string nameFather)
 {
-    int height=-1;
-    node * toAdd=returnNode(nameChild,this->root,height);
+    int height=0;
+    node * toAdd=returnNode(nameChild,this->root,&height);
+//    if(nameChild=="Rachel")
+//    {
+//        cout<<"toAdd->getName(): "<<toAdd->getName();
+//    }
     if(toAdd== nullptr)
     {
         throw runtime_error("The "+nameChild +" does not exist in tree");
@@ -101,7 +106,7 @@ Tree& Tree:: addFather(string nameChild, string nameFather)
         }
         else
         {
-            node * father=new node(nameFather,'m',height);
+            node * father=new node(nameFather,'m',height+1);
             toAdd->setFather(father);
         }
     }
@@ -116,8 +121,8 @@ Tree& Tree:: addFather(string nameChild, string nameFather)
  */
 Tree& Tree:: addMother(string nameChild, string nameMother)
 {
-    int height=-1;
-    node * toAdd=returnNode(nameChild,this->root,height);
+    int height=0;
+    node * toAdd=returnNode(nameChild,this->root,&height);
     if(toAdd== nullptr)
     {
         throw runtime_error("The "+nameChild +"does not exist in tree");
@@ -130,7 +135,7 @@ Tree& Tree:: addMother(string nameChild, string nameMother)
         }
         else
         {
-            node * mother=new node(nameMother,'f',height);
+            node * mother=new node(nameMother,'f',height+1);
             toAdd->setMother(mother);
         }
     }
@@ -144,15 +149,21 @@ Tree& Tree:: addMother(string nameChild, string nameMother)
  */
 string Tree::relation(string name)
 {
-    if(this->root!=NULL && this->root->getName().compare(name)==0) return "me";
-    else if (this->root->getMother()!= nullptr && this->root->getMother()->getName().compare(name)==0) return "mother";
-    else if (this->root->getFather()!= nullptr && this->root->getFather()->getName().compare(name)==0) return "father";
-    else if (this->root->getMother()->getMother()!=nullptr && this->root->getMother()->getMother()->getName().compare(name)==0) return "grandmother";
-    else if (this->root->getFather()->getFather()!= nullptr && this->root->getFather()->getFather()->getName().compare(name)==0) return "grandfather";
+    if(this->root!=NULL && this->root->getName()==name) return "me";
+    else if (this->root->getMother()!= nullptr && this->root->getMother()->getName()==name) return "mother";
+    else if (this->root->getFather()!= nullptr && this->root->getFather()->getName()==name) return "father";
+    else if (this->root->getMother()!= nullptr && this->root->getMother()->getMother()!=nullptr && this->root->getMother()->getMother()->getName()==name) return "grandmother";
+    else if (this->root->getFather()!= nullptr && this->root->getFather()->getFather()!= nullptr && this->root->getFather()->getFather()->getName()==name) return "grandfather";
+    else if (this->root->getFather()!= nullptr && this->root->getFather()->getMother()!=nullptr && this->root->getFather()->getMother()->getName()==name) return "grandmother";
+    else if (this->root->getMother()!= nullptr && this->root->getMother()->getFather()!= nullptr && this->root->getMother()->getFather()->getName()==name) return "grandfather";
     else
     {
         int height=0;
-        node * ans=returnNode(name,this->root,height);
+        node * ans=returnNode(name,this->root,&height);
+        if(name=="Avi")
+        {
+            cout<<"ans->getHeight()"<<ans->getHeight();
+        }
         if(ans== nullptr)
         {
             return "unrelated";
@@ -160,6 +171,8 @@ string Tree::relation(string name)
         else
         {
             int times=ans->getHeight();
+            times=times-2;
+
             string finaleAns="";
             for (int i = 0; i <times ;i++) {
                 finaleAns+="great-";
@@ -231,7 +244,17 @@ void  Tree:: findRecursion(node * ptr,string name,string & finalAns)
 
 void Tree:: display()
 {
-
+    printTree(this->root,0);
+}
+void printTree(family::node* root,int space){
+    if(root==NULL) return;
+    space+=COUNT;
+    printTree(root->getMother(),space);
+    cout<<endl;
+    for (int i = COUNT; i < space; i++)
+        cout<<" ";
+    cout<<root->getName()<<"\n";
+    printTree(root->getFather(),space);
 }
 
 void Tree:: remove(string name)
@@ -291,38 +314,50 @@ void Tree::deleteSubTree(node * ptr)
     }
 }
 
-node* Tree::returnNode(string key,node* ptr,int & height)
+node* Tree::returnNode(string key,node* ptr,int* height)
 {
-     if(ptr!= nullptr) //the node we currently working on is not null
-     {
-         if (ptr->getName().compare(key)==0) //find the right node
-         {
-             return ptr;
-         }
-         else //still not found the right node
-         {
-           if(ptr->getFather()!= nullptr) //there is still a right tree
-           {
-               height=height+1;
-               return returnNode(key,ptr->getFather(),height);
-           }
-           if(ptr->getMother()!= nullptr) //there is still a left tree
-           {
-               height=height+1;
-               return returnNode(key,ptr->getMother(),height);
-           }
-           else if(ptr->getFather()== nullptr && ptr->getMother()== nullptr) //there no one more to check
-           {
-               return nullptr;
-           }
-         }
-     }
-     else
-     {
-         throw runtime_error("The tree does not exist");
-     }
+    if(ptr!= nullptr) //the node we currently working on is not null
+    {
+        if (ptr->getName()==key) //find the right node
+        {
+            return ptr;
+        }
+        else //still not found the right node
+        {
+            if(ptr->getFather()== nullptr && ptr->getMother()== nullptr) //there no one more to check
+            {
+                return nullptr;
+            }
+            else { //at least one of them isnt null
 
-    return nullptr;
+                if (ptr->getFather() != nullptr) //there is still a right tree
+                {
+                    node * a = returnNode(key, ptr->getFather(), height);
+                    if (a!= nullptr)
+                    {
+                        *(height) = *(height) + 1;
+                        return  a;
+                    }
+                }
+                if (ptr->getMother() != nullptr) //there is still a left tree
+                {
+                    node * b= returnNode(key, ptr->getMother(), height);
+                    if (b!= nullptr) {
+                        *(height) = *(height) + 1;
+                        return  b;
+                    }
+                }
+                return nullptr;
+            }
+        }
+    }
+    else
+    {
+        throw runtime_error("The tree does not exist");
+    }
+
 }
+
+
 
 

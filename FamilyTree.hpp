@@ -45,8 +45,9 @@ namespace family {
 
     class Tree {
     private:
-        node* root;
+
     public:
+        node* root;
         Tree (string name)
         {
             this->root=new node(name);
@@ -67,18 +68,21 @@ namespace family {
 
         void remove(string name);
 
-        node * getRoot();
-
+        node * getRoot(){
+            return this->root;
+        }
+        node * returnNode(string key,node * ptr,int * height);
     private:
-        node * returnNode(string key,node * ptr,int & height);
+
         void  findRecursion(node * ptr,string name,string & finalAns);
         void findChild(node * ptr,string name,node ** childToUpdate);
         void deleteSubTree(node * ptr);
 
+
     }; //end class Tree
 } //end namespace family
 
-
+void printTree(family::node* root,int space);
 
 
 
