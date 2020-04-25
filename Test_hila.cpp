@@ -19,8 +19,6 @@ TEST_CASE("Test 1 addFather & addMother & relation") {
     CHECK_THROWS(T.addMother("Shalom", "Meri"));
 
     T.addMother("Yafa", "Ahuva").addMother("Ahuva", "Miriam");
-    cout<<"HILa TREE YOSEF CASE:";
-    T.display();
     CHECK(T.relation("Ahuva") == string("grandmother"));
     CHECK(T.relation("Miriam") == string("great-grandmother"));
     CHECK_THROWS(T.addMother("Yafa", "Michal"));
@@ -125,8 +123,6 @@ TEST_CASE("Test 2 addFather & addMother & relation"){
     CHECK_THROWS(T.addMother("Ronny", "Lital"));
     
     T.addMother("Rivka", "Arbel").addMother("Arbel", "Rita").addFather("Dan", "Ronen").addFather("Ronen", "Almog");
-    cout<<"HILa TREE YOSEF CASE:";
-    T.display();
     CHECK(T.relation("Arbel") == string("grandmother"));
     CHECK(T.relation("Rita") == string("great-grandmother"));
     CHECK(T.relation("Ronen") == string("grandfather"));

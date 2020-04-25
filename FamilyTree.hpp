@@ -71,18 +71,18 @@ namespace family {
         node * getRoot(){
             return this->root;
         }
-        node * returnNode(string key,node * ptr,int * height);
     private:
-
+        node * returnNode(string key,node * ptr,int * height);
         void  findRecursion(node * ptr,string name,string & finalAns);
         void findChild(node * ptr,string name,node ** childToUpdate);
         void deleteSubTree(node * ptr);
-
+        void addMotherOrFather(string nameChild, string nameParent, string whichParent,node * root);
+        void printTree(family::node* root,int space);
 
     }; //end class Tree
 } //end namespace family
 
-void printTree(family::node* root,int space);
+
 
 
 

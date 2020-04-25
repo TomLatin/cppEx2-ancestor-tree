@@ -37,9 +37,6 @@ TEST_CASE("Yosef Tree case") {
 	CHECK_THROWS(T.addFather("Avraham", "Avraham"));    // duplicate father
 	CHECK_THROWS(T.addMother("Avraham", "Sara"));       // duplicate mother
 
-	cout<<"ARIEL TREE YOSEF CASE:";
-	T.display();
-
 	// Relation test case
 	CHECK(T.relation("Yaakov") == string("father"));
 	CHECK(T.relation("Rachel") == string("mother"));

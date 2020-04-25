@@ -2,7 +2,7 @@
 using namespace family;
 #define COUNT 10
 
-//************Implementation of the functions of node************
+//************Implementation of the functions of node class************
 
 //Default constructor
 node::node ()
@@ -21,15 +21,6 @@ node::node (string name)
     this->father=nullptr;
     this->mother=nullptr;
     this->gender='n';
-    this->height=0;
-}
-
-node::node (string name, char gender)
-{
-    this->name=name;
-    this->father=nullptr;
-    this->mother=nullptr;
-    this->gender=gender;
     this->height=0;
 }
 
@@ -78,74 +69,85 @@ char node::getGender()
     return this->gender;
 }
 
-//************Implementation of the functions of Tree************
+//************Implementation of the functions of Tree class************
 
 /**
- * The father will mark the right side of the binary tree.
+ * A shell method whose job is to add father to the child
+ * The father will mark the right side.
  * @param nameChild
  * @param nameFather
  * @return Reference to the tree after the change
  */
 Tree& Tree:: addFather(string nameChild, string nameFather)
 {
-    int height=0;
-    node * toAdd=returnNode(nameChild,this->root,&height);
-//    if(nameChild=="Rachel")
-//    {
-//        cout<<"toAdd->getName(): "<<toAdd->getName();
-//    }
-    if(toAdd== nullptr)
-    {
-        throw runtime_error("The "+nameChild +" does not exist in tree");
-    }
-    else //the name child is in the tree
-    {
-        if(toAdd->getFather()!= nullptr)
-        {
-            throw runtime_error("To "+nameChild +" Father's name is already set");
-        }
-        else
-        {
-            node * father=new node(nameFather,'m',height+1);
-            toAdd->setFather(father);
-        }
-    }
+    addMotherOrFather(nameChild,nameFather,"father",this->root);
     return *this;
 }
 
 /**
- *  The father will mark the left side of the binary tree.
+ * A shell method whose job is to add mother to the child
+ *  The father will mark the left side
  * @param nameChild
  * @param nameMother
  * @return Reference to the tree after the change
  */
 Tree& Tree:: addMother(string nameChild, string nameMother)
 {
+    addMotherOrFather(nameChild,nameMother,"mother",this->root);
+    return *this;
+}
+
+/**
+ *A method whose job is to find the right node and then add another node to it.
+  The method adds a father or mother according to whichParent parameter
+ * @param nameChild
+ * @param nameParent
+ * @param whichParent
+ * @param root
+ */
+void Tree::addMotherOrFather(string nameChild, string nameParent, string whichParent,node * root)
+{
     int height=0;
-    node * toAdd=returnNode(nameChild,this->root,&height);
+    node * toAdd=returnNode(nameChild,root,&height);
     if(toAdd== nullptr)
     {
         throw runtime_error("The "+nameChild +"does not exist in tree");
     }
     else //the name child is in the tree
     {
-        if(toAdd->getMother()!= nullptr)
+        if(whichParent=="mother")
         {
-            throw runtime_error("To "+nameChild +" Mother's name is already set");
+            if(toAdd->getMother()!= nullptr)
+            {
+                throw runtime_error("To "+nameChild +" Mother's name is already set");
+            }
+            else
+            {
+                node * mother=new node(nameParent,'f',height+1);
+                toAdd->setMother(mother);
+            }
         }
-        else
+        else //whichParent=="father"
         {
-            node * mother=new node(nameMother,'f',height+1);
-            toAdd->setMother(mother);
+            if(toAdd->getFather()!= nullptr)
+            {
+                throw runtime_error("To "+nameChild +" Father's name is already set");
+            }
+            else
+            {
+                node * father=new node(nameParent,'m',height+1);
+                toAdd->setFather(father);
+            }
         }
     }
-    return *this;
 }
 
 /**
- *
+ *Accepting someone's name in the tree, returning their relationship to you.
+ * For example: father, mother, grandmother, great-grandfather, great-great-grandmother ...
+ * If he is not in the tree, return unrelated.
  * @param name
- * @return
+ * @return Family relation
  */
 string Tree::relation(string name)
 {
@@ -156,14 +158,10 @@ string Tree::relation(string name)
     else if (this->root->getFather()!= nullptr && this->root->getFather()->getFather()!= nullptr && this->root->getFather()->getFather()->getName()==name) return "grandfather";
     else if (this->root->getFather()!= nullptr && this->root->getFather()->getMother()!=nullptr && this->root->getFather()->getMother()->getName()==name) return "grandmother";
     else if (this->root->getMother()!= nullptr && this->root->getMother()->getFather()!= nullptr && this->root->getMother()->getFather()->getName()==name) return "grandfather";
-    else
+    else //need to add "great-" x times
     {
         int height=0;
-        node * ans=returnNode(name,this->root,&height);
-        if(name=="Avi")
-        {
-            cout<<"ans->getHeight()"<<ans->getHeight();
-        }
+        node * ans=returnNode(name,this->root,&height); //To know how many times the word "great-" should be added, we need to know the height of the node
         if(ans== nullptr)
         {
             return "unrelated";
@@ -172,7 +170,6 @@ string Tree::relation(string name)
         {
             int times=ans->getHeight();
             times=times-2;
-
             string finaleAns="";
             for (int i = 0; i <times ;i++) {
                 finaleAns+="great-";
@@ -190,6 +187,13 @@ string Tree::relation(string name)
     }
 }
 
+/**
+ * An inverse relation function, accepts a string that specifies a relation, and returns the person's name from the tree
+ * that maintains this relation.
+   If it does not exist, the function throws an error.
+ * @param name
+ * @return
+ */
 string Tree:: find(string name)
 {
     if(name=="me"&&this->root!=NULL) return root->getName();
@@ -208,6 +212,7 @@ string Tree:: find(string name)
     }
 }
 
+//help function to: string Tree:: find(string name)
 void  Tree:: findRecursion(node * ptr,string name,string & finalAns)
 {
     if(ptr==NULL) return;
@@ -242,11 +247,14 @@ void  Tree:: findRecursion(node * ptr,string name,string & finalAns)
     }
 }
 
+//this method taken from https://www.geeksforgeeks.org/print-binary-tree-2-dimensions/
 void Tree:: display()
 {
     printTree(this->root,0);
 }
-void printTree(family::node* root,int space){
+
+//this method taken from https://www.geeksforgeeks.org/print-binary-tree-2-dimensions/
+void Tree:: printTree(family::node* root,int space){
     if(root==NULL) return;
     space+=COUNT;
     printTree(root->getMother(),space);
@@ -257,6 +265,10 @@ void printTree(family::node* root,int space){
     printTree(root->getFather(),space);
 }
 
+/**
+ * Gets the name of someone who is in the tree, and deletes it and all its parents from the tree.
+ * @param name
+ */
 void Tree:: remove(string name)
 {
     if(this->root->getName()==name)
@@ -287,6 +299,7 @@ void Tree:: remove(string name)
     }
 }
 
+//help function to: void Tree:: remove(string name)
 void Tree::findChild(node * ptr,string name,node ** childToUpdate)
 {
     if(ptr==NULL) return;
@@ -304,6 +317,7 @@ void Tree::findChild(node * ptr,string name,node ** childToUpdate)
     }
 }
 
+//help function to: void Tree:: remove(string name)
 void Tree::deleteSubTree(node * ptr)
 {
     if(ptr!=NULL)
@@ -328,7 +342,7 @@ node* Tree::returnNode(string key,node* ptr,int* height)
             {
                 return nullptr;
             }
-            else { //at least one of them isnt null
+            else { //at least one of them isn't null
 
                 if (ptr->getFather() != nullptr) //there is still a right tree
                 {
